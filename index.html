@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light" data-fs="md">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>自在极意</title>
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/todo.css" />
+<link rel="stylesheet" href="css/notes.css" />
+<link rel="stylesheet" href="css/pet.css" />
+<link rel="stylesheet" href="css/settings.css" />
+</head>
+<body>
+
+<!-- ========== 图标定义 ========== -->
+<svg class="svg-sprite" aria-hidden="true" focusable="false"><defs>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M4.5 12.6l4.8 4.8L19.6 7"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6.2 3.4h7.4l4.6 4.6v12.2a.8.8 0 0 1-.8.8H6.2a.8.8 0 0 1-.8-.8V4.2a.8.8 0 0 1 .8-.8z"/><path d="M13.4 3.6v4.6h4.6M9 12.6h6.2M9 16.2h4.2"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4.2 7h15.6M9.4 7V4.9c0-.5.4-.9.9-.9h3.4c.5 0 .9.4.9.9V7"/><path d="M6.6 7l.9 12.2c0 .9.8 1.6 1.7 1.6h5.6c.9 0 1.7-.7 1.7-1.6L17.4 7"/><path d="M10.2 11v6M13.8 11v6"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l1.8-1.3-1.9-3.3-2.1.9a7.5 7.5 0 0 0-2.6-1.5L14.2 3H9.8l-.4 2.3a7.5 7.5 0 0 0-2.6 1.5l-2.1-.9L2.8 9.2l1.8 1.3a7.6 7.6 0 0 0 0 3l-1.8 1.3 1.9 3.3 2.1-.9a7.5 7.5 0 0 0 2.6 1.5l.4 2.3h4.4l.4-2.3a7.5 7.5 0 0 0 2.6-1.5l2.1.9 1.9-3.3z"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5.2v13.6M5.2 12h13.6"/></symbol>
+  <symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M16.4 4.2l3.4 3.4-11 11-4.4 1 1-4.4z"/><path d="M14.2 6.4l3.4 3.4"/></symbol>
+  <symbol id="ic-chev-r" viewBox="0 0 24 24"><path d="M9.6 6.2l6 5.8-6 5.8"/></symbol>
+  <symbol id="ic-chev-l" viewBox="0 0 24 24"><path d="M14.4 6.2l-6 5.8 6 5.8"/></symbol>
+  <symbol id="ic-chev-d" viewBox="0 0 24 24"><path d="M6.4 9.6l5.6 5.6 5.6-5.6"/></symbol>
+  <symbol id="ic-up" viewBox="0 0 24 24"><path d="M12 19.2V5M6.4 10.4L12 4.8l5.6 5.6"/></symbol>
+  <symbol id="ic-down" viewBox="0 0 24 24"><path d="M12 4.8v14.4M6.4 13.6L12 19.2l5.6-5.6"/></symbol>
+  <symbol id="ic-grip" viewBox="0 0 24 24"><circle cx="9.2" cy="7" r="1.1" fill="currentColor" stroke="none"/><circle cx="9.2" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="9.2" cy="17" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="7" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="17" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.2"/><path d="M15.6 15.6l4 4"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 4l2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></symbol>
+  <symbol id="ic-more" viewBox="0 0 24 24"><circle cx="5.6" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="18.4" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><path d="M6.4 6.4l11.2 11.2M17.6 6.4L6.4 17.6"/></symbol>
+  <symbol id="ic-undo" viewBox="0 0 24 24"><path d="M4.6 9.4h9.6a5 5 0 0 1 0 10H9"/><path d="M8.2 5.6L4.4 9.4l3.8 3.8"/></symbol>
+  <symbol id="ic-redo" viewBox="0 0 24 24"><path d="M19.4 9.4H9.8a5 5 0 0 0 0 10H15"/><path d="M15.8 5.6l3.8 3.8-3.8 3.8"/></symbol>
+  <symbol id="ic-quote" viewBox="0 0 24 24"><path d="M9.4 6.6c-2.6 1-4 3.1-4 5.9v4.9h5.1v-5H7.9c0-1.8.7-3 2.4-3.8zM19.4 6.6c-2.6 1-4 3.1-4 5.9v4.9h5.1v-5h-2.6c0-1.8.7-3 2.4-3.8z"/></symbol>
+  <symbol id="ic-code" viewBox="0 0 24 24"><path d="M8.6 8.4L4.4 12l4.2 3.6M15.4 8.4L19.6 12l-4.2 3.6M13.4 5.6l-2.8 12.8"/></symbol>
+  <symbol id="ic-image" viewBox="0 0 24 24"><rect x="3.6" y="5.2" width="16.8" height="13.6" rx="2.2"/><circle cx="8.8" cy="10.2" r="1.6"/><path d="M4.4 16.6l4.6-4.6 3.2 3.2 2.6-2.6 4.6 4.6"/></symbol>
+  <symbol id="ic-table" viewBox="0 0 24 24"><rect x="3.6" y="5" width="16.8" height="14" rx="1.8"/><path d="M3.8 10h16.4M3.8 14.4h16.4M9.6 5.2v13.6M14.8 5.2v13.6"/></symbol>
+  <symbol id="ic-link" viewBox="0 0 24 24"><path d="M10.4 13.6a3.8 3.8 0 0 0 5.4 0l2.8-2.8a3.8 3.8 0 0 0-5.4-5.4l-1.2 1.2"/><path d="M13.6 10.4a3.8 3.8 0 0 0-5.4 0l-2.8 2.8a3.8 3.8 0 0 0 5.4 5.4l1.2-1.2"/></symbol>
+  <symbol id="ic-hr" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M8 6.4h8M8 17.6h8" opacity=".45"/></symbol>
+  <symbol id="ic-ul" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11"/><circle cx="5" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-ol" viewBox="0 0 24 24"><path d="M9.4 7h10.6M9.4 12h10.6M9.4 17h10.6"/><path d="M4.2 5.6h1.1v3.1M3.9 12.2h2.1l-2.1 2.4h2.2M4 16.6h2v1.2H4.6h1.4v1.2H4" stroke-width="1.3"/></symbol>
+  <symbol id="ic-checkbox" viewBox="0 0 24 24"><rect x="4" y="4.4" width="15.6" height="15.6" rx="4"/><path d="M8.2 12.4l2.6 2.6 5-5.4"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7.6V12l3.2 2"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2.8 12S6.4 6.2 12 6.2 21.2 12 21.2 12 17.6 17.8 12 17.8 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+  <symbol id="ic-eye-off" viewBox="0 0 24 24"><path d="M4.6 4.6l14.8 14.8"/><path d="M9.6 6.7A9.4 9.4 0 0 1 12 6.2c5.6 0 9.2 5.8 9.2 5.8a17 17 0 0 1-2.8 3.4M6.1 8.2A17 17 0 0 0 2.8 12S6.4 17.8 12 17.8a9 9 0 0 0 3.1-.5"/><path d="M10.2 10.4a2.6 2.6 0 0 0 3.5 3.6"/></symbol>
+  <symbol id="ic-folder" viewBox="0 0 24 24"><path d="M3.8 7.4c0-1 .8-1.8 1.8-1.8h3.6l1.9 2.2h7.3c1 0 1.8.8 1.8 1.8v8.2c0 1-.8 1.8-1.8 1.8H5.6c-1 0-1.8-.8-1.8-1.8z"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M5.2 4.6h9.2l4.4 4.4v10.4a.8.8 0 0 1-.8.8H5.2a.8.8 0 0 1-.8-.8V5.4a.8.8 0 0 1 .8-.8z"/><path d="M14.2 4.8v4.4h4.4"/><path d="M8.2 12.4h5M8.2 15.8h3.4"/></symbol>
+  <symbol id="ic-note" viewBox="0 0 24 24"><path d="M4.4 5.4c0-.6.5-1.1 1.1-1.1h13c.6 0 1.1.5 1.1 1.1v9.2L14.6 20H5.5c-.6 0-1.1-.5-1.1-1.1z"/><path d="M19.2 14.4h-4.6V19"/></symbol>
+  <symbol id="ic-draft" viewBox="0 0 24 24"><path d="M5 4.4h14v15.2H5z"/><path d="M8.2 8.6h7.6M8.2 12h7.6M8.2 15.4h4.4"/></symbol>
+  <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7"/></symbol>
+  <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M20 14.4A8.2 8.2 0 0 1 9.6 4a8.2 8.2 0 1 0 10.4 10.4z"/></symbol>
+  <symbol id="ic-restore" viewBox="0 0 24 24"><path d="M4.4 10.6a8 8 0 1 1 1.4 6.4"/><path d="M3.8 5.8v5h5"/></symbol>
+  <symbol id="ic-panel" viewBox="0 0 24 24"><rect x="3.6" y="4.6" width="16.8" height="14.8" rx="2.2"/><path d="M9.6 4.8v14.4"/></symbol>
+  <symbol id="ic-palette" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 0 0 0 16.8c1.3 0 1.9-.9 1.9-1.8 0-1.4-1.2-1.7-1.2-2.9 0-1 .8-1.7 1.9-1.7h1.9a3.9 3.9 0 0 0 3.9-3.9c0-3.6-3.8-6.5-8.4-6.5z"/><circle cx="8" cy="9.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="7.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="16" cy="9" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-highlight" viewBox="0 0 24 24"><path d="M15.6 3.8l4.6 4.6-7.8 7.8-4.6-4.6z"/><path d="M7.8 11.6l-2 5.6 5.6-2"/><path d="M4.4 20.2h8.2"/></symbol>
+  <symbol id="ic-arrow-left" viewBox="0 0 24 24"><path d="M20 12H5.2M11 5.6L4.6 12l6.4 6.4"/></symbol>
+  <symbol id="ic-log-out" viewBox="0 0 24 24"><path d="M14.4 4.6H6.2a1 1 0 0 0-1 1v12.8a1 1 0 0 0 1 1h8.2"/><path d="M16.6 8.4L20.2 12l-3.6 3.6M10 12h10"/></symbol>
+</defs></svg>
+
+<div class="app" id="app">
+
+  <!-- ========== 全局导航 ========== -->
+  <nav class="rail" id="rail" aria-label="主导航">
+    <div class="rail-top">
+      <button class="rail-logo" id="railLogo" type="button" title="小塔菲" aria-label="小塔菲，点一下看看她">
+        <img src="assets/pet/front_calm.png" alt="" draggable="false" />
+        <span class="rail-logo-dot" id="railLogoDot" hidden></span>
+      </button>
+      <button class="rail-btn" data-nav="todo" aria-label="待办">
+        <span class="rail-ico"><svg><use href="#ic-check"/></svg></span>
+        <span class="rail-label">待办</span>
+      </button>
+      <button class="rail-btn" data-nav="notes" aria-label="笔记">
+        <span class="rail-ico"><svg><use href="#ic-doc"/></svg></span>
+        <span class="rail-label">笔记</span>
+      </button>
+      <button class="rail-btn" data-nav="trash" aria-label="回收站">
+        <span class="rail-ico"><svg><use href="#ic-trash"/></svg></span>
+        <span class="rail-label">回收站</span>
+      </button>
+    </div>
+    <div class="rail-bottom">
+      <button class="rail-btn" id="petToggle" aria-label="隐藏桌面宠物">
+        <span class="rail-ico"><svg><use href="#ic-eye"/></svg></span>
+        <span class="rail-label">桌宠</span>
+      </button>
+      <button class="rail-btn" data-nav="settings" aria-label="设置">
+        <span class="rail-ico"><svg><use href="#ic-gear"/></svg></span>
+        <span class="rail-label">设置</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="views" id="views">
+
+    <!-- ========== 待办 ========== -->
+    <section class="view view-todo" id="view-todo" data-view="todo" aria-label="待办">
+      <div class="page" id="todoPage">
+        <header class="page-head">
+          <div class="page-head-main">
+            <h1 class="page-title">我的事务</h1>
+            <p class="page-sub" id="todoSub">一次只办一件事，最多两件在手</p>
+          </div>
+          <button class="btn btn-ghost" id="btnFlow">
+            <svg class="btn-ico"><use href="#ic-eye"/></svg><span>心流模式</span>
+          </button>
+        </header>
+
+        <section class="sec" id="secDoing">
+          <div class="sec-head">
+            <h2 class="sec-title">正在办理</h2>
+            <span class="sec-count" id="doingCount">0 / 2</span>
+            <div class="sec-actions">
+              <button class="btn-icon-add" id="btnAddDoing" aria-label="新建正在办理">
+                <svg><use href="#ic-plus"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="doing-grid" id="doingGrid"></div>
+          <div class="sec-empty" id="doingEmpty" hidden>手上还没有事，从下面挑一件开始</div>
+        </section>
+
+        <section class="sec" id="secTodo">
+          <div class="sec-head">
+            <h2 class="sec-title">待办事项</h2>
+            <span class="sec-count" id="todoCount">0 项</span>
+            <div class="sec-actions">
+              <button class="btn-icon-add" id="btnAddTodo" aria-label="新建待办">
+                <svg><use href="#ic-plus"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="todoList"></div>
+          <div class="sec-empty" id="todoEmpty" hidden>还没有待办，点右上角的 ＋ 开始</div>
+        </section>
+
+        <footer class="page-foot">
+          <button class="link-btn" data-nav="trash">查看回收站</button>
+          <span class="page-foot-dot">·</span>
+          <span id="footStat">—</span>
+        </footer>
+      </div>
+
+      <!-- 心流模式舞台 -->
+      <div class="flow" id="flowStage" aria-hidden="true">
+        <div class="flow-hero">
+          <h2 class="flow-title">明鏡止水の心</h2>
+          <p class="flow-sub">一次只办一件事<br>明镜止水之心，沉入平静心流，唤醒高效我流</p>
+          <p class="flow-foot">专注当下 · 不被打扰</p>
+        </div>
+        <div class="flow-tasks" id="flowTasks"></div>
+        <div class="flow-done" id="flowDone" hidden>手上的事都清空了，松一口气吧</div>
+      </div>
+      <button class="btn btn-flow-exit" id="btnFlowExit" aria-hidden="true" tabindex="-1">
+        <svg class="btn-ico"><use href="#ic-log-out"/></svg><span>解除心流</span><kbd class="flow-esc">Esc</kbd>
+      </button>
+    </section>
+
+    <!-- ========== 笔记 ========== -->
+    <section class="view view-notes" id="view-notes" data-view="notes" aria-label="笔记">
+      <aside class="nlist" id="nlist" aria-label="笔记列表">
+        <div class="nlist-head">
+          <h2 class="nlist-title">笔记</h2>
+          <div class="nlist-head-actions">
+            <button class="btn-icon-sm nlist-close" id="btnListClose" title="收起列表" aria-label="收起列表">
+              <svg><use href="#ic-chev-l"/></svg>
+            </button>
+            <button class="btn-icon-sm" id="btnMove" title="移动" aria-label="移动">
+              <svg><use href="#ic-log-out"/></svg>
+            </button>
+            <button class="btn-icon-sm" id="btnNewNote" title="新建" aria-label="新建">
+              <svg><use href="#ic-plus"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="nlist-search">
+          <svg class="nlist-search-ico"><use href="#ic-search"/></svg>
+          <input type="text" id="noteSearch" placeholder="搜索标题或正文" autocomplete="off" />
+          <button class="nlist-search-clear" id="noteSearchClear" hidden aria-label="清除">
+            <svg><use href="#ic-x"/></svg>
+          </button>
+        </div>
+        <div class="nlist-body" id="nlistBody"></div>
+      </aside>
+      <div class="nlist-mask" id="nlistMask"></div>
+
+      <div class="nmain" id="nmain">
+        <div class="tabbar" id="tabbar" hidden></div>
+        <header class="nhead">
+          <button class="icon-btn nhead-drawer" id="btnDrawer" aria-label="笔记列表">
+            <svg><use href="#ic-panel"/></svg>
+          </button>
+          <nav class="crumbs" id="crumbs" aria-label="路径"></nav>
+          <div class="nhead-right">
+            <span class="save-status" id="saveStatus"></span>
+            <button class="icon-btn" id="btnOutline" title="文章大纲" aria-label="文章大纲">
+              <svg><use href="#ic-ul"/></svg>
+            </button>
+            <button class="icon-btn" id="btnStar" title="收藏" aria-label="收藏">
+              <svg><use href="#ic-star"/></svg>
+            </button>
+            <button class="icon-btn" id="btnNoteMore" title="更多" aria-label="更多">
+              <svg><use href="#ic-more"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="paper-scroll" id="paperScroll">
+          <div class="tb-wrap">
+            <div class="tb" id="editorToolbar" role="toolbar" aria-label="编辑工具栏">
+              <button class="tb-btn tb-block-btn" data-menu="block" title="段落样式">
+                <span id="blockLabel">正文</span><svg class="tb-caret"><use href="#ic-chev-d"/></svg>
+              </button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn tb-fw" data-cmd="bold" title="加粗">B</button>
+              <button class="tb-btn tb-it" data-cmd="italic" title="斜体">I</button>
+              <button class="tb-btn tb-ul" data-cmd="underline" title="下划线">U</button>
+              <button class="tb-btn tb-st" data-cmd="strikeThrough" title="删除线">S</button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" data-menu="color" title="文字颜色"><svg><use href="#ic-palette"/></svg></button>
+              <button class="tb-btn" data-menu="hilite" title="高亮"><svg><use href="#ic-highlight"/></svg></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" data-cmd="insertUnorderedList" title="无序列表"><svg><use href="#ic-ul"/></svg></button>
+              <button class="tb-btn" data-cmd="insertOrderedList" title="有序列表"><svg><use href="#ic-ol"/></svg></button>
+              <button class="tb-btn" data-cmd="checklist" title="任务清单"><svg><use href="#ic-checkbox"/></svg></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" data-cmd="quote" title="引用"><svg><use href="#ic-quote"/></svg></button>
+              <button class="tb-btn" data-cmd="hr" title="分割线"><svg><use href="#ic-hr"/></svg></button>
+              <button class="tb-btn" data-cmd="image" title="插入图片"><svg><use href="#ic-image"/></svg></button>
+              <button class="tb-btn" data-cmd="table" title="插入表格"><svg><use href="#ic-table"/></svg></button>
+              <button class="tb-btn" data-cmd="link" title="插入链接"><svg><use href="#ic-link"/></svg></button>
+              <button class="tb-btn" data-cmd="code" title="代码块"><svg><use href="#ic-code"/></svg></button>
+              <span class="tb-sep"></span>
+              <button class="tb-btn" data-cmd="undo" title="撤销"><svg><use href="#ic-undo"/></svg></button>
+              <button class="tb-btn" data-cmd="redo" title="重做"><svg><use href="#ic-redo"/></svg></button>
+              <span class="tb-spacer"></span>
+              <button class="tb-btn" data-menu="more" title="更多"><svg><use href="#ic-more"/></svg></button>
+            </div>
+          </div>
+          <div class="paper" id="paper">
+            <input class="note-title" id="noteTitle" placeholder="未命名" autocomplete="off" />
+            <div class="note-meta" id="noteMeta"></div>
+            <div class="note-body" id="noteBody" contenteditable="true" spellcheck="false"></div>
+          </div>
+          <aside class="outline" id="outline" hidden>
+            <div class="outline-head">大纲</div>
+            <div class="outline-body" id="outlineBody"></div>
+          </aside>
+        </div>
+
+        <div class="ed-empty" id="edEmpty">
+          <div class="ed-empty-ico"><svg><use href="#ic-note"/></svg></div>
+          <p class="ed-empty-title">还没有打开任何内容</p>
+          <p class="ed-empty-sub">左侧选一条，或者新建</p>
+          <div class="ed-empty-actions">
+            <button class="btn btn-soft" id="btnEmptyNew" data-empty-kind="general">新建笔记</button>
+            <button class="btn btn-ghost" id="btnEmptyNotebook" data-empty-kind="general">新建笔记集</button>
+            <button class="btn btn-soft" id="btnDrillNew" data-empty-kind="box" data-empty-act="new-in-box" hidden>在本集新建一章</button>
+            <button class="btn btn-ghost" id="btnDrillRename" data-empty-kind="box" hidden>重命名</button>
+            <button class="btn btn-ghost" id="btnDrillDelete" data-empty-kind="box" hidden>删除</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 回收站 ========== -->
+    <section class="view view-trash" id="view-trash" data-view="trash" aria-label="回收站">
+      <div class="page">
+        <header class="page-head">
+          <div class="page-head-main">
+            <h1 class="page-title">回收站</h1>
+            <p class="page-sub">完成与删除的内容都在这里，永久保留直到你手动处理</p>
+          </div>
+          <button class="btn btn-ghost" id="btnEmptyTrash">
+            <svg class="btn-ico"><use href="#ic-trash"/></svg><span>清空</span>
+          </button>
+        </header>
+        <div class="seg seg-inline" id="trashTabs" role="tablist">
+          <button class="seg-btn is-on" data-trash="task" role="tab">待办</button>
+          <button class="seg-btn" data-trash="note" role="tab">笔记</button>
+        </div>
+        <div id="trashList" class="trash-list"></div>
+      </div>
+    </section>
+
+    <!-- ========== 设置 ========== -->
+    <section class="view view-settings" id="view-settings" data-view="settings" aria-label="设置">
+      <div class="page">
+        <header class="page-head">
+          <div class="page-head-main">
+            <h1 class="page-title">设置</h1>
+            <p class="page-sub">所有改动即时生效并本地保存</p>
+          </div>
+        </header>
+        <div id="settingsBody"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ========== 桌宠 ========== -->
+<div class="pet-layer" id="petLayer" aria-hidden="true">
+  <div class="pet" id="pet">
+    <div class="pet-sign" id="petSign" hidden>
+      <span class="sign-tag">已超时</span>
+      <span class="sign-name" id="petSignText"></span>
+    </div>
+    <div class="pet-bubble" id="petBubble" hidden></div>
+    <div class="pet-body" id="petBody">
+      <img class="pet-img" id="petImg" alt="" draggable="false" />
+      <div class="pet-shadow" id="petShadow"></div>
+    </div>
+    <div class="pet-zzz" id="petZzz" hidden><span>z</span><span>z</span><span>z</span></div>
+  </div>
+</div>
+
+<div class="toast-host" id="toastHost" aria-live="polite"></div>
+<div class="modal-layer" id="modalLayer"></div>
+<div class="menu-layer" id="menuLayer"></div>
+<input type="file" id="fileInput" accept="image/*" hidden />
+
+<script src="js/util.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/todo.js"></script>
+<script src="js/notes.js"></script>
+<script src="js/pet.js"></script>
+<script src="js/pet-proxy.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

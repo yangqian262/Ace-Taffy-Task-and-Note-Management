@@ -1,0 +1,526 @@
+/* ============================================================
+   自在极意 · 待办页面
+   ============================================================ */
+
+.sec { margin-bottom: var(--sp-8); }
+.sec:last-of-type { margin-bottom: 0; }
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--sp-4);
+  min-height: 30px;
+}
+.sec-title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1.5;
+}
+.sec-count {
+  font-size: var(--fs-meta);
+  color: var(--ink-faint);
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--bg-list);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.sec-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+/* ============ 任务卡片 ============ */
+.doing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.task-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 20px 20px 20px 18px;
+  border-radius: var(--r-card);
+  background: var(--bg-paper);
+  box-shadow: var(--sh-paper);
+  transition: box-shadow var(--t-card) var(--e-out), transform var(--t-card) var(--e-out),
+              background-color var(--t-card) var(--e-out);
+}
+.task-card:hover { box-shadow: var(--sh-hover); }
+.task-card.is-dragging {
+  opacity: .55;
+  box-shadow: var(--sh-drag);
+  transform: scale(1.012);
+  cursor: grabbing;
+}
+.task-card.is-flash { animation: card-flash 900ms var(--e-out); }
+@keyframes card-flash {
+  0% { box-shadow: 0 0 0 0 var(--accent-pink); }
+  40% { box-shadow: 0 0 0 4px var(--accent-soft); }
+  100% { box-shadow: var(--sh-paper); }
+}
+
+.doing-card { padding: 24px 22px; min-height: 156px; }
+
+.task-main { min-width: 0; }
+.task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--fs-meta);
+  color: var(--ink-secondary);
+  line-height: 1.5;
+  margin-bottom: 7px;
+}
+.task-meta .dot-sep { color: var(--ink-faint); }
+
+.task-title {
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: .005em;
+  color: var(--ink-primary);
+  cursor: text;
+  border-radius: 6px;
+  transition: background-color var(--t-hover) var(--e-out);
+  overflow-wrap: anywhere;
+}
+.doing-card .task-title { font-size: 17px; line-height: 1.5; }
+.task-title:hover { background: var(--hover-veil); }
+.task-title[contenteditable="true"]:focus { background: var(--bg-app); outline: none; }
+
+.task-desc {
+  margin-top: 6px;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--ink-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: text;
+  border-radius: 6px;
+  transition: background-color var(--t-hover) var(--e-out);
+  overflow-wrap: anywhere;
+}
+.task-desc:hover { background: var(--hover-veil); }
+.task-desc.is-empty { display: none; }
+
+.task-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-size: var(--fs-meta);
+  color: var(--ink-faint);
+}
+.task-due svg { width: 13px; height: 13px; }
+.task-due.is-near { color: var(--danger-deep); }
+
+/* 状态标签 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .02em;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+.badge-overdue {
+  background: var(--danger-soft);
+  color: var(--danger-deep);
+  animation: breathe 2s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: .86; }
+  50% { opacity: 1; }
+}
+
+/* 超时卡片渐变 */
+.task-card.is-overdue {
+  background: linear-gradient(160deg, var(--warning-bg) 0%, var(--danger-soft) 100%);
+}
+.task-card.is-overdue .task-desc { color: var(--danger-deep); opacity: .9; }
+
+/* 完成中动画 */
+.task-card.is-completing {
+  animation: card-done var(--t-done) var(--e-linear) forwards;
+  pointer-events: none;
+}
+@keyframes card-done {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.012); opacity: 1; }
+  100% { transform: scale(.86); opacity: 0; }
+}
+
+/* 圆形交互按钮（悬停展开文字） */
+.pill-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  overflow: hidden;
+  align-self: start;
+  margin-top: 1px;
+  transition: background-color var(--t-hover) var(--e-out), box-shadow var(--t-hover) var(--e-out);
+}
+.pill-btn:hover { background: var(--accent-line); }
+.pill-dot {
+  flex: 0 0 28px;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+}
+.pill-dot svg { width: 15px; height: 15px; stroke-width: 2; }
+.pill-txt {
+  max-width: 0;
+  opacity: 0;
+  padding-right: 0;
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: max-width var(--t-expand) var(--e-out), opacity var(--t-expand) var(--e-out),
+              padding-right var(--t-expand) var(--e-out);
+}
+.pill-btn:hover .pill-txt,
+.pill-btn:focus-visible .pill-txt { max-width: 88px; opacity: 1; padding-right: 13px; }
+.pill-btn:active { transform: scale(.96); }
+.pill-btn.is-done { background: var(--accent-line); }
+
+.task-tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity var(--t-hover) var(--e-out), transform var(--t-hover) var(--e-out);
+}
+.task-card:hover .task-tools,
+.task-card:focus-within .task-tools { opacity: 1; transform: none; }
+
+.tool-btn {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  display: grid; place-items: center;
+  color: var(--ink-faint);
+  transition: background-color var(--t-hover) var(--e-out), color var(--t-hover) var(--e-out);
+}
+.tool-btn:hover { background: var(--hover-veil); color: var(--ink-primary); }
+.tool-btn.is-danger:hover { background: var(--danger-soft); color: var(--danger-deep); }
+.tool-btn svg { width: 14px; height: 14px; }
+
+.grip {
+  width: 20px; height: 26px;
+  display: grid; place-items: center;
+  color: var(--ink-faint);
+  cursor: grab;
+  opacity: .7;
+  border-radius: 6px;
+}
+.grip:active { cursor: grabbing; }
+.grip svg { width: 15px; height: 15px; }
+.grip:hover { opacity: 1; background: var(--hover-veil); }
+
+.arrow-group { display: flex; flex-direction: column; gap: 1px; }
+.arrow-btn {
+  width: 20px; height: 13px;
+  border-radius: 4px;
+  display: grid; place-items: center;
+  color: var(--ink-faint);
+  transition: background-color var(--t-hover) var(--e-out), color var(--t-hover) var(--e-out);
+}
+.arrow-btn:hover:not([disabled]) { background: var(--hover-veil); color: var(--ink-primary); }
+.arrow-btn[disabled] { opacity: .25; cursor: default; }
+.arrow-btn svg { width: 12px; height: 12px; stroke-width: 2; }
+
+/* ============ 待办列表 ============ */
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 10px;
+  font-size: var(--fs-meta);
+  color: var(--ink-faint);
+  letter-spacing: .02em;
+}
+.group-head:first-child { margin-top: 0; }
+.group-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.group-count { order: 3; }
+
+#todoList { display: flex; flex-direction: column; }
+.todo-card { margin-bottom: 10px; padding: 16px 18px; }
+.todo-card .task-title { font-size: var(--fs-card-title); }
+
+.drop-line {
+  height: 2px;
+  border-radius: 2px;
+  margin: 5px 4px;
+  background: var(--accent-pink);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  animation: drop-line-in 160ms var(--e-out);
+}
+/* 插入指示线做成浮层：挤进 grid 里会真的把卡片推走，落点就算不准 */
+.drop-line.is-floating {
+  position: fixed;
+  z-index: 40;
+  margin: 0;
+  pointer-events: none;
+}
+@keyframes drop-line-in { from { transform: scaleX(.7); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* 拖拽中：整卡都能抓，所以给个抓取光标 + 禁掉文字选择 */
+body.task-dragging { cursor: grabbing; user-select: none; -webkit-user-select: none; }
+body.task-dragging .task-card { cursor: grabbing; }
+body.task-dragging .task-card:hover { box-shadow: var(--sh-paper); }
+
+/* ============ 原位创建卡片 ============ */
+.create-card {
+  border-radius: var(--r-card);
+  background: var(--bg-paper);
+  box-shadow: var(--sh-hover);
+  padding: 18px;
+  margin-bottom: 10px;
+  animation: create-in 220ms var(--e-out) both;
+}
+@keyframes create-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.create-title {
+  width: 100%;
+  font-size: var(--fs-card-title);
+  font-weight: 600;
+  padding: 4px 0 8px;
+}
+.doing-grid .create-card { grid-column: 1 / -1; }
+.create-desc {
+  width: 100%;
+  min-height: 40px;
+  resize: none;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--ink-secondary);
+  padding: 4px 0 8px;
+}
+.create-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.create-due-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: var(--r-control);
+  background: var(--bg-app);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: var(--fs-meta);
+  color: var(--ink-secondary);
+}
+.create-due-field svg { width: 14px; height: 14px; color: var(--ink-faint); flex: 0 0 auto; }
+.create-due-field input {
+  font-size: var(--fs-meta);
+  color: var(--ink-primary);
+  width: 120px;
+  background: none;
+}
+.create-due-field input[type="time"] { width: 76px; }
+.create-due-field input.is-empty { color: var(--ink-faint); }
+.create-due-field input::-webkit-calendar-picker-indicator { opacity: .5; cursor: pointer; }
+.create-foot { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.create-hint { font-size: 11px; color: var(--ink-faint); margin-right: 4px; }
+
+/* ============ 心流模式 ============ */
+/* 进出心流是一段有层次的过场：页面让位 → 幕布下沉 → 文字浮现 → 卡片依次就位 */
+.view-todo {
+  transition: opacity var(--t-page) var(--e-out),
+              transform var(--t-page) var(--e-out),
+              background-color 440ms var(--e-out);
+}
+.view-todo.is-flow { background: #F9F5F0; overflow: hidden; }
+html[data-theme="dark"] .view-todo.is-flow { background: #2C2926; }
+
+/* 退出心流时：页面延迟一点再浮回来，先让幕布散掉 */
+.view-todo .page {
+  transition: opacity 340ms var(--e-out) 160ms,
+              transform 420ms var(--e-out) 160ms,
+              visibility 0s linear 0s;
+}
+.view-todo.is-flow .page {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(.986) translateY(12px);
+  visibility: hidden;
+  transition: opacity 180ms var(--e-out),
+              transform 220ms var(--e-out),
+              visibility 0s linear 220ms;
+}
+
+.flow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+  padding: 56px 40px 104px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(16px) scale(.994);
+  transition: opacity 240ms var(--e-out), transform 300ms var(--e-out);
+  overflow-y: auto;
+}
+.view-todo.is-flow .flow {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  transition: opacity 480ms var(--e-out) 100ms,
+              transform 600ms var(--e-out) 100ms;
+}
+/* 心流里滚动条也淡出，别破坏宁静感 */
+.flow::-webkit-scrollbar { width: 0; }
+
+.flow-hero { text-align: center; max-width: 640px; }
+.flow-title {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  line-height: 1.5;
+  text-indent: .18em;
+  animation: flow-breathe 4s ease-in-out infinite;
+  --breathe-lo: .94;
+  --breathe-hi: 1;
+}
+.flow-sub {
+  margin-top: 22px;
+  font-size: calc(var(--fs-body) + 1px);
+  line-height: 2;
+  /* 呼吸动画本身在压透明度，底色就不能再用淡灰，否则叠起来几乎看不清 */
+  color: var(--ink-primary);
+  letter-spacing: .04em;
+  animation: flow-breathe 4s ease-in-out infinite;
+  animation-delay: .3s;
+  --breathe-lo: .84;
+  --breathe-hi: 1;
+}
+.flow-foot {
+  margin-top: 32px;
+  font-size: calc(var(--fs-meta) + 1px);
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--ink-secondary);
+  animation: flow-breathe 4s ease-in-out infinite;
+  animation-delay: .6s;
+  --breathe-lo: .76;
+  --breathe-hi: .94;
+}
+@keyframes flow-breathe {
+  0%, 100% { opacity: var(--breathe-lo, .86); transform: translateY(1.5px); }
+  50% { opacity: var(--breathe-hi, 1); transform: translateY(-1.5px); }
+}
+
+.flow-tasks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 300px));
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+.flow-tasks .task-card { filter: saturate(.94); box-shadow: 0 4px 18px rgba(120, 100, 80, .07); }
+.flow-tasks .task-tools { display: none; }
+.flow-tasks:empty { display: none; }
+
+/* 卡片错峰浮入 / 退出时一起收起 */
+.flow-tasks .task-card {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 340ms var(--e-out), transform 380ms var(--e-out);
+}
+.view-todo.is-flow .flow-tasks .task-card { opacity: 1; transform: none; }
+.view-todo.is-flow .flow-tasks .task-card:nth-child(1) { transition-delay: 360ms; }
+.view-todo.is-flow .flow-tasks .task-card:nth-child(2) { transition-delay: 450ms; }
+
+.flow-done {
+  font-size: calc(var(--fs-meta) + 1px);
+  color: var(--ink-secondary);
+  letter-spacing: .06em;
+  animation: flow-breathe 4s ease-in-out infinite;
+  --breathe-lo: .84;
+  --breathe-hi: 1;
+}
+
+/* 解除按钮：跟着幕布最后浮现，退出时最先退场 */
+.btn-flow-exit {
+  position: absolute;
+  right: 40px;
+  bottom: 34px;
+  height: 38px;
+  padding: 0 18px;
+  background: var(--bg-paper);
+  color: var(--ink-secondary);
+  box-shadow: var(--sh-paper);
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 180ms var(--e-out), transform 220ms var(--e-out),
+              color var(--t-hover) var(--e-out), box-shadow var(--t-hover) var(--e-out);
+}
+.view-todo.is-flow .btn-flow-exit {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 340ms var(--e-out) 340ms,
+              transform 400ms var(--e-out) 340ms,
+              color var(--t-hover) var(--e-out), box-shadow var(--t-hover) var(--e-out);
+}
+.btn-flow-exit:hover { color: var(--ink-primary); box-shadow: var(--sh-hover); }
+.flow-esc {
+  margin-left: 9px;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  background: var(--bg-app);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* 退出心流回到列表时，正在办理区轻轻浮起一次，告诉眼睛「回到这儿了」。
+   只动位移不动透明度，免得和 page 的淡入叠成两层面纱 */
+@keyframes flow-return {
+  from { transform: translateY(16px); }
+  to   { transform: none; }
+}
+.view-todo.is-returning .doing-grid { animation: flow-return 460ms var(--e-out) both; }
+.view-todo.is-returning #secDoing .sec-head { animation: flow-return 420ms var(--e-out) both; }
+
+@media (max-width: 1080px) {
+  .doing-grid { grid-template-columns: minmax(0, 1fr); }
+  .flow-tasks { grid-template-columns: minmax(0, 420px); }
+  .flow-title { font-size: 30px; }
+}
+@media (max-width: 720px) {
+  .flow { padding: 40px 22px 96px; gap: 36px; }
+  .flow-title { font-size: 25px; letter-spacing: .12em; text-indent: .12em; }
+  .btn-flow-exit { right: 18px; bottom: 20px; }
+}

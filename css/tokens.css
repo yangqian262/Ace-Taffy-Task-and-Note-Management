@@ -1,0 +1,125 @@
+/* ============================================================
+   自在极意 · 设计 Token
+   全部取自 PRD 第 3 章视觉规范；派生值以注释标明用途
+   ============================================================ */
+
+:root {
+  /* ---------- 色彩 · 浅色模式（默认） ---------- */
+  --bg-app: #F7F2EC;
+  --bg-paper: #FFFDF9;
+  --bg-rail: #F3ECE3;
+  --bg-list: #FBF7F1;
+  --ink-primary: #3A3733;
+  --ink-secondary: #8C8378;
+  --ink-faint: #B4AA9C;
+  --line: #EDE6DC;
+  --accent-pink: #D8A7A0;
+  --accent-lilac: #C9B7D6;
+  --accent-soft: #F7E7E3;
+  --danger: #BA7870;
+  --warning-bg: #FBEFEC;
+
+  /* ---------- 派生色（同一色系内生成，不引入新色相） ---------- */
+  --accent-deep: #C08E86;        /* 粉色加深：按钮悬停、强调描边 */
+  --accent-line: #E5C6BF;        /* 粉色 40%：胶囊边、插入指示线 */
+  --danger-deep: #A5645C;
+  --danger-soft: #F7DCD6;        /* 超时卡片渐变终点 */
+  --hover-veil: rgba(58, 55, 51, .045);   /* 通用悬停蒙层 */
+  --press-veil: rgba(58, 55, 51, .085);
+  --rail-hover: rgba(58, 55, 51, .05);
+  --scrim: rgba(58, 55, 51, .20);          /* 弹窗背景遮罩 0→0.18 */
+  --code-bg: #F4EFE6;
+  --paper-edge: rgba(120, 100, 80, .07);
+
+  /* ---------- 阴影（PRD 3.3） ---------- */
+  --sh-paper: 0 6px 24px rgba(120, 100, 80, .08);
+  --sh-hover: 0 8px 28px rgba(120, 100, 80, .12);
+  --sh-drag: 0 12px 32px rgba(120, 100, 80, .18);
+  --sh-pop: 0 10px 30px rgba(120, 100, 80, .16);
+  --sh-inset: inset 0 0 0 1px var(--paper-edge);
+
+  /* ---------- 圆角（PRD 3.3） ---------- */
+  --r-paper: 16px;
+  --r-card: 12px;
+  --r-control: 10px;
+  --r-pill: 999px;
+
+  /* ---------- 间距：4px 基准 ---------- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-7: 32px; --sp-8: 40px; --sp-9: 48px;
+
+  /* ---------- 字体（PRD 3.4） ---------- */
+  --font-sans: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", "SFMono-Regular", monospace;
+  --fs-page-title: 28px;
+  --fs-h1: 28px;
+  --fs-h2: 22px;
+  --fs-h3: 18px;
+  --fs-card-title: 15px;
+  --fs-body: 14px;
+  --fs-meta: 12px;
+  --lh-tight: 1.4;
+  --lh-title: 1.5;
+  --lh-body: 1.7;
+
+  /* ---------- 动效（PRD 4.2） ---------- */
+  --e-out: cubic-bezier(.22, .61, .36, 1);
+  --e-press: cubic-bezier(.3, .7, .4, 1);
+  --e-linear: cubic-bezier(.4, 0, .2, 1);
+  --t-hover: 160ms;
+  --t-press: 120ms;
+  --t-expand: 180ms;
+  --t-page: 300ms;
+  --t-modal-in: 220ms;
+  --t-modal-out: 180ms;
+  --t-card: 280ms;
+  --t-done: 420ms;
+  --t-return: 240ms;
+  --t-flow: 800ms;
+  --t-theme: 300ms;
+
+  /* ---------- 布局 ---------- */
+  --rail-w: 72px;
+  --nlist-w: 280px;
+  --paper-max: 700px;
+  --paper-col: 604px;
+  --page-pad: 40px;
+
+  /* ---------- 界面字号档（data-fs 覆盖） ---------- */
+  --ui-scale: 1;
+}
+
+/* ---------- 深色模式（PRD 3.2） ---------- */
+html[data-theme="dark"] {
+  --bg-app: #2A2724;
+  --bg-paper: #333029;
+  --bg-rail: #252220;
+  --bg-list: #2E2B26;
+  --ink-primary: #EDE7DE;
+  --ink-secondary: #A79C8E;
+  --ink-faint: #7C7365;
+  --line: #423D36;
+  --accent-pink: #D8A7A0;
+  --accent-lilac: #C9B7D6;
+  --accent-soft: #42332F;
+  --danger: #C98E86;
+  --warning-bg: #3B2C28;
+  --accent-deep: #E2B6AF;
+  --accent-line: #5B4842;
+  --danger-deep: #DCA49C;
+  --danger-soft: #4A342F;
+  --hover-veil: rgba(237, 231, 222, .06);
+  --press-veil: rgba(237, 231, 222, .11);
+  --rail-hover: rgba(237, 231, 222, .07);
+  --scrim: rgba(12, 10, 9, .46);
+  --code-bg: #2B2822;
+  --paper-edge: rgba(255, 255, 255, .05);
+  --sh-paper: 0 6px 24px rgba(0, 0, 0, .28);
+  --sh-hover: 0 8px 28px rgba(0, 0, 0, .36);
+  --sh-drag: 0 12px 32px rgba(0, 0, 0, .48);
+  --sh-pop: 0 10px 30px rgba(0, 0, 0, .44);
+}
+
+/* ---------- 界面字号（PRD 11 设置项） ---------- */
+html[data-fs="sm"] { --fs-body: 13px; --ui-scale: .94; --fs-card-title: 14px; }
+html[data-fs="lg"] { --fs-body: 15.5px; --ui-scale: 1.08; --fs-card-title: 16px; }

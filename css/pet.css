@@ -1,0 +1,422 @@
+/* ============================================================
+   自在极意 · 桌面宠物
+   ============================================================ */
+
+.pet-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+}
+
+.pet {
+  position: absolute;
+  left: 0; top: 0;
+  height: var(--pet-size, 180px);
+  pointer-events: auto;
+  cursor: grab;
+  opacity: 1;
+  transition: opacity 320ms var(--e-out);
+  will-change: transform;
+  touch-action: none;
+}
+.pet.is-hidden { opacity: 0; pointer-events: none; }
+.pet.is-ghost { opacity: .0; }
+.pet.is-dragging { cursor: grabbing; }
+
+.pet-body {
+  position: relative;
+  height: 100%;
+  transform-origin: 50% 96%;
+  animation: pet-breathe 3.6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes pet-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.008, 1.018); }
+}
+
+.pet-img {
+  height: 100%;
+  width: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 8px 16px rgba(90, 72, 56, .18));
+  transition: filter 200ms var(--e-out);
+}
+.pet:hover .pet-img { filter: drop-shadow(0 10px 20px rgba(90, 72, 56, .22)); }
+
+.pet-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 56%;
+  height: 9px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(90, 72, 56, .22), rgba(90, 72, 56, 0) 72%);
+  pointer-events: none;
+}
+
+/* 走动颠簸 */
+.pet-body.is-walk { animation: pet-walk 380ms ease-in-out infinite alternate; }
+@keyframes pet-walk {
+  from { transform: translateY(0) rotate(-.8deg); }
+  to { transform: translateY(-3px) rotate(.8deg); }
+}
+
+/* ============ 待机小动作 ============ */
+/* 原地蹲跳 */
+.pet-body.is-hop { animation: pet-hop 480ms var(--e-out); }
+@keyframes pet-hop {
+  0% { transform: translateY(0) scale(1, 1); }
+  16% { transform: translateY(0) scale(1.09, .9); }
+  44% { transform: translateY(-20px) scale(.95, 1.07); }
+  70% { transform: translateY(0) scale(1.07, .93); }
+  85% { transform: translateY(0) scale(.985, 1.015); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* 伸懒腰：横向收窄、纵向拔高，停一下再松 */
+.pet-body.is-stretch { animation: pet-stretch 1000ms var(--e-out); }
+@keyframes pet-stretch {
+  0% { transform: scale(1, 1); }
+  30% { transform: scale(.92, 1.08) translateY(-6px); }
+  62% { transform: scale(.9, 1.1) translateY(-8px); }
+  100% { transform: scale(1, 1) translateY(0); }
+}
+
+/* 扭捏：小幅左右摆 */
+.pet-body.is-shy { animation: pet-shy 900ms ease-in-out; }
+@keyframes pet-shy {
+  0%, 100% { transform: rotate(0) translateX(0); }
+  22% { transform: rotate(-2.4deg) translateX(-3px); }
+  50% { transform: rotate(2.2deg) translateX(3px); }
+  76% { transform: rotate(-1.2deg) translateX(-1px); }
+}
+
+/* 歪着：往一侧偏过去停一会儿再回正，用在疑惑 / 委屈上 */
+.pet-body.is-tilt { animation: pet-tilt 900ms var(--e-out); }
+@keyframes pet-tilt {
+  0%   { transform: rotate(0) translateY(0); }
+  26%  { transform: rotate(-3.8deg) translateY(-2px); }
+  64%  { transform: rotate(-3.4deg) translateY(-2px); }
+  100% { transform: rotate(0) translateY(0); }
+}
+
+/* 轻摇：什么都不干，慢慢晃两下 */
+.pet-body.is-sway { animation: pet-sway 1500ms ease-in-out; }
+@keyframes pet-sway {
+  0%, 100% { transform: rotate(0) translateX(0); }
+  20% { transform: rotate(-1.6deg) translateX(-4px); }
+  52% { transform: rotate(1.6deg) translateX(4px); }
+  80% { transform: rotate(-.9deg) translateX(-2px); }
+}
+
+/* 生气：快速左右抖 + 上跳一下 */
+.pet-body.is-rage { animation: pet-rage 560ms ease-in-out; }
+@keyframes pet-rage {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  12% { transform: translate(-5px, -2px) rotate(-2.6deg); }
+  28% { transform: translate(5px, 0) rotate(2.6deg); }
+  44% { transform: translate(-4px, -3px) rotate(-2deg); }
+  60% { transform: translate(4px, 0) rotate(2deg); }
+  78% { transform: translate(-2px, -1px) rotate(-.8deg); }
+}
+
+/* 被甩出去：飞行中身体前倾，落地再弹一下 */
+.pet-body.is-fling { animation: pet-fling 520ms ease-out; }
+@keyframes pet-fling {
+  0% { transform: rotate(0) scale(1, 1); }
+  30% { transform: rotate(-9deg) scale(.94, 1.06); }
+  70% { transform: rotate(6deg) scale(1.02, .98); }
+  100% { transform: rotate(0) scale(1, 1); }
+}
+
+/* 睡着：呼吸放慢、身子微微下沉 */
+.pet-body.is-sleep { animation: pet-sleep 5.5s ease-in-out infinite; }
+@keyframes pet-sleep {
+  0%, 100% { transform: scale(1, 1) translateY(0); }
+  50% { transform: scale(1.012, 1.03) translateY(2px); }
+}
+
+/* 惊醒：猛地一弹 */
+.pet-body.is-wake { animation: pet-wake 620ms var(--e-out); }
+@keyframes pet-wake {
+  0% { transform: scale(1, 1) translateY(2px); }
+  18% { transform: scale(1.06, .92) translateY(0); }
+  42% { transform: scale(.94, 1.1) translateY(-12px); }
+  66% { transform: scale(1.04, .97) translateY(0); }
+  84% { transform: scale(.99, 1.01) translateY(-2px); }
+  100% { transform: scale(1, 1) translateY(0); }
+}
+
+/* 心流守护：站定，呼吸更慢更轻 */
+.pet-body.is-watch { animation: pet-watch 6.5s ease-in-out infinite; }
+@keyframes pet-watch {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.006, 1.012); }
+}
+
+/* ============ 金币粒子 ============ */
+/* 纯 CSS 画的金币：径向渐变币身 + 内圈虚线 + ¥ 字，比 emoji 稳定、深浅色都不偏色 */
+.pet-coin {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 21px;
+  height: 21px;
+  margin: -10px 0 0 -10px;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 34% 27%,
+      #FFF7D6 0%, #FFE49B 24%, #F4C24C 56%, #C9921F 100%);
+  box-shadow:
+    inset 0 0 0 1.5px #C08A1C,
+    inset 0 -1px 2px rgba(120, 80, 10, .32),
+    0 2px 5px rgba(140, 100, 20, .22);
+  /* 分段写，别用简写：简写里带 var() 一旦解析失败整条声明就作废 */
+  animation-name: coin-fly;
+  animation-duration: 1350ms;
+  animation-timing-function: cubic-bezier(.22, .61, .36, 1);
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+  z-index: 6;
+}
+.pet-coin::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px dashed rgba(150, 105, 20, .5);
+}
+.pet-coin i {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: #8A5E10;
+  transform: translateY(-.5px);
+}
+.pet-coin.is-shine {
+  box-shadow:
+    inset 0 0 0 1.5px #C08A1C,
+    inset 0 -1px 2px rgba(120, 80, 10, .32),
+    0 0 10px 2px rgba(240, 196, 88, .55);
+}
+
+/* 抛出去 → 翻转 → 飘散淡出。中途的 scaleX 变化就是硬币在翻面 */
+@keyframes coin-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(.32) scaleX(1);
+  }
+  13% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--dx1, 0px)), -18px) scale(var(--sc, 1)) scaleX(.42);
+  }
+  25% {
+    transform: translate(calc(-50% + var(--dx1, 0px)), -30px) scale(var(--sc, 1)) scaleX(1);
+  }
+  37% {
+    transform: translate(calc(-50% + var(--dx1, 0px) * 1.5), -42px) scale(var(--sc, 1)) scaleX(.46);
+  }
+  49% {
+    transform: translate(calc(-50% + var(--dx1, 0px) * 2), -52px) scale(var(--sc, 1)) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx, 0px)), -88px) scale(.78) rotate(var(--rot, 0deg)) scaleX(.7);
+  }
+}
+
+/* 被摸头 */
+.pet-body.is-pat { animation: pet-pat 420ms var(--e-out); }
+@keyframes pet-pat {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.09, .93) translateY(0); }
+  55% { transform: scale(.96, 1.06) translateY(-8px); }
+  78% { transform: scale(1.02, .98) translateY(0); }
+  100% { transform: scale(1); }
+}
+
+/* 拖拽：拉伸 + 倾斜 */
+.pet-body.is-drag {
+  animation: none;
+  transform: rotate(var(--drag-tilt, 0deg)) scale(1.02, 1.06);
+  transition: transform 120ms var(--e-out);
+}
+
+/* 落地回弹 */
+.pet-body.is-land { animation: pet-land 380ms var(--e-out); }
+@keyframes pet-land {
+  0% { transform: scale(1.04, .92); }
+  45% { transform: scale(.97, 1.05); }
+  70% { transform: scale(1.012, .99); }
+  100% { transform: scale(1); }
+}
+
+/* 困倦 */
+.pet-body.is-sleepy { animation: pet-breathe 6s ease-in-out infinite; }
+
+/* ============ 气泡卡：悬停显示正在办理 ============ */
+.pet-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  /* --bx 由 JS 按视口边缘动态修正，防止贴在屏幕右边时气泡被裁掉 */
+  transform: translate(calc(-50% + var(--bx, 0px)), 6px);
+  min-width: 0;
+  /* 明确宽度：绝对定位在窄父容器里，auto 会被压成一条 */
+  width: 220px;
+  max-width: 220px;
+  padding: 11px 13px 12px;
+  border-radius: 13px;
+  background: var(--bg-paper);
+  box-shadow: var(--sh-pop);
+  font-size: var(--fs-meta);
+  line-height: 1.65;
+  color: var(--ink-primary);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-expand) var(--e-out), transform var(--t-expand) var(--e-out);
+  z-index: 4;
+}
+.pet-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px; height: 10px;
+  margin-left: -5px;
+  background: var(--bg-paper);
+  /* 反向抵消气泡偏移，让三角始终指着她 */
+  transform: translateX(calc(-1 * var(--bx, 0px))) rotate(45deg);
+  border-radius: 2px;
+}
+.pet-bubble.is-on { opacity: 1; transform: translate(calc(-50% + var(--bx, 0px)), 0); pointer-events: auto; }
+
+/* 举牌出现时把气泡抬上去，别叠在一起 */
+.pet.has-sign .pet-bubble { bottom: calc(100% + 74px); }
+.pb-head {
+  font-size: 11px;
+  letter-spacing: .05em;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+}
+.pb-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 0;
+}
+.pb-dot {
+  flex: 0 0 auto;
+  width: 5px; height: 5px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--accent-pink);
+}
+.pb-item.is-overdue .pb-dot { background: var(--danger); }
+.pb-item.is-overdue .pb-name { color: var(--danger-deep); }
+.pb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pb-more { margin-top: 4px; font-size: 11px; color: var(--ink-faint); }
+.pb-empty { color: var(--ink-faint); }
+
+/* 闲聊气泡：一句话，比任务卡轻。宽度由 JS 按字数给定 */
+.pet-bubble.is-say {
+  min-width: 0;
+  max-width: 210px;
+  padding: 9px 13px;
+  border-radius: 14px;
+  text-align: center;
+}
+.pb-say {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-primary);
+  letter-spacing: .01em;
+}
+
+/* ============ 举牌：超时提醒 ============ */
+.pet-sign {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 6px);
+  transform: translate(calc(-50% + var(--bx, 0px)), 10px) rotate(-2deg);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #FFFBF6, #F8E7E2);
+  color: var(--ink-primary);
+  box-shadow: var(--sh-pop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms var(--e-out), transform 260ms var(--e-out);
+  z-index: 5;
+  white-space: nowrap;
+  max-width: 260px;
+}
+html[data-theme="dark"] .pet-sign { background: linear-gradient(160deg, #3A332C, #43302B); }
+.pet-sign::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 8px; height: 12px;
+  margin-left: -4px;
+  background: var(--accent-line);
+  border-radius: 2px;
+  transform: translateX(calc(-1 * var(--bx, 0px)));
+}
+.pet-sign.is-on { opacity: 1; transform: translate(calc(-50% + var(--bx, 0px)), 0) rotate(-2deg); pointer-events: auto; }
+.pet-sign .sign-tag {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--danger-deep);
+  background: var(--danger-soft);
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+  margin-bottom: 5px;
+}
+.pet-sign .sign-name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+/* ============ 困倦 zzz ============ */
+.pet-zzz {
+  position: absolute;
+  right: 8%;
+  top: 6%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
+.pet-zzz span {
+  font-size: 10px;
+  opacity: 0;
+  animation: zzz 3.2s ease-in-out infinite;
+}
+.pet-zzz span:nth-child(2) { font-size: 13px; animation-delay: .5s; }
+.pet-zzz span:nth-child(3) { font-size: 16px; animation-delay: 1s; }
+@keyframes zzz {
+  /* 起始别归零：3.2 秒一循环，全黑的那段一截图就是「睡着了却没有 z」 */
+  0% { opacity: .18; transform: translate(0, 4px); }
+  28% { opacity: .9; }
+  100% { opacity: .14; transform: translate(7px, -14px); }
+}
+
+/* 桌宠隐藏时导航按钮的关闭态 */
+#petToggle.is-off { color: var(--ink-faint); opacity: .55; }
